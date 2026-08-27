@@ -3,7 +3,7 @@
 exists on system'''
 
 import os
-import importlib.util
+from importlib.util import find_spec
 from importlib.metadata import version
 from shutil import which
 from subprocess import run
@@ -14,12 +14,12 @@ exe1 = ['ffmpeg', 'ffprobe']	# fftools gives alot of version info, separated
 exe2 = ['deno']	# installed on system
 
 status = {}
-not_ok = 0
+not_found = 0
 
 # checking python libs
 for lib in libs:
-	if importlib.util.find_spec(lib) is None:
-		not_ok += 1
+	if find_spec(lib) is None:
+		not_found += 1
 		status['[LIB] '+lib] = 'not found'
 	else:
 		status['[LIB] '+lib] = version(lib)
@@ -34,7 +34,7 @@ for exe in exe1:
 		vers = vers[1]
 		status['[EXE] '+exe] = vers
 	else:
-		not_ok += 1
+		not_found += 1
 		status['[EXE] '+exe] = 'not found'
 
 # checking exe2 with shutil's which
@@ -47,13 +47,13 @@ for exe in exe2:
 		vers = vers[1]
 		status['[EXE] '+exe] = vers
 	else:
-		not_ok += 1
+		not_found += 1
 		status['[EXE] '+exe] = 'not found'
 
 # report func to be called from ytdlp.py, will not work if called from py console
 # returns true if any requirements are not found
 def report():
-	return bool(not_ok)
+	return bool(not_found)
 
 def main():
 	# foreground color codes

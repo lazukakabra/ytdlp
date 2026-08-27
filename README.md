@@ -13,7 +13,8 @@
   - mutagen -> pip install mutagen
     - https://pypi.org/project/mutagen/
 
-important to note, this script uses the python lib yt-dlp and not the standalone executable
+**important to note, this script uses the python lib yt-dlp and not the standalone executable.**
+
 when the script is run for the first time it will ask for locations to save downloaded video and audio files which is stored in a file it creates in the same directory as the script.
 to change the paths, edit the file ```ytdlp_paths.txt``` or delete it and rerun script.
 

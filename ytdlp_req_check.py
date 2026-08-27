@@ -9,7 +9,7 @@ from shutil import which
 from subprocess import run
 
 # set requirements to check here
-libs = ['yt_dlp', 'yt_dlp_ejs', 'mutagen', 'tester']	# python libs
+libs = ['yt_dlp', 'yt_dlp_ejs', 'mutagen']	# python libs
 exe1 = ['ffmpeg', 'ffprobe']	# fftools gives alot of version info, separated
 exe2 = ['deno']	# installed on system
 

@@ -11,7 +11,7 @@
     - ffmpeg, ffprobe -> https://www.ffmpeg.org/download.html
       - ensure ffmpeg and ffprobe are in the same folder
         - for windows, add their location to PATH environment variable, see section ytdlp.bat below on how to add variable
-  - with pip get python lib:
+  - with pip get python lib, linux might need to enter a venv to install with pip, ubuntu does atleast:
     - yt-dlp -> ```pip install yt-dlp``` -> https://pypi.org/project/yt-dlp/
     - yt-dlp-ejs -> ```pip install yt-dlp-ejs``` ->https://pypi.org/project/yt-dlp-ejs/
     - mutagen -> ```pip install mutagen``` -> https://pypi.org/project/mutagen/
@@ -43,7 +43,7 @@ to do so however the file location have to be added to environment variables and
 the file ```ytdlp.bat``` is not needed for linux. instead, simply add the following to your bash profile, or whatever else shell, terminal whatever you run. if you run something else you can probably figure this out on your own np:  
   ```echo "alias ytdlp='python3 /full/path/to/yt-dlp.py'" >> ~/.bashrc```  
 which adds a new line in .bashrc with the alias. then restart your terminal or do:  
-  ```source ~./bashrc```  
+  ```source ~/.bashrc```  
 which should refresh the terminal with the new settings set in the file.  
 you should now be able to call ```ytdlp``` (or whatever command you set instead) from your terminal and it will start the script.  
 

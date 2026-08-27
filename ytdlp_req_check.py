@@ -9,19 +9,20 @@ from shutil import which
 from subprocess import run
 
 # set requirements to check here
-libs = ['yt_dlp', 'yt_dlp_ejs', 'mutagen']	# python libs
+libs = ['yt_dlp', 'yt_dlp_ejs', 'mutagen', 'tester']	# python libs
 exe1 = ['ffmpeg', 'ffprobe']	# fftools gives alot of version info, separated
 exe2 = ['deno']	# installed on system
 
-ok = {}
-not_ok = []
+status = {}
+not_ok = 0
 
 # checking python libs
 for lib in libs:
 	if importlib.util.find_spec(lib) is None:
-		not_ok.append('[LIB] '+lib)
+		not_ok += 1
+		status['[LIB] '+lib] = 'not found'
 	else:
-		ok['[LIB] '+lib] = version(lib)
+		status['[LIB] '+lib] = version(lib)
 
 # checking exe1
 for exe in exe1:
@@ -31,9 +32,10 @@ for exe in exe1:
 		vers = vers.split(' Copyright')
 		vers = vers[0].split('version ')
 		vers = vers[1]
-		ok['[EXE] '+exe] = vers
+		status['[EXE] '+exe] = vers
 	else:
-		not_ok.append('[EXE] '+exe)
+		not_ok += 1
+		status['[EXE] '+exe] = 'not found'
 
 # checking exe2 with shutil's which
 for exe in exe2:
@@ -43,9 +45,10 @@ for exe in exe2:
 		vers = vers.strip('\n')
 		vers = vers.split('deno ')
 		vers = vers[1]
-		ok['[EXE] '+exe] = vers
+		status['[EXE] '+exe] = vers
 	else:
-		not_ok.append(exe)
+		not_ok += 1
+		status['[EXE] '+exe] = 'not found'
 
 # report func to be called from ytdlp.py, will not work if called from py console
 # returns true if any requirements are not found
@@ -71,16 +74,15 @@ def main():
 	print2(color(DARK_CYAN, f'detected OS >> ')+os.name)
 
 	# printing status msgs
-	if ok:
-		print2(color(GREEN, 'found >>'),
-			color(YELLOW, f'  \033[4m[typ] {"name":<14} version\033[24m'))
-		for k, v in ok.items():
-			print2(f'  {k:<20} {v}')
-
-	if not_ok:
-		print2(color(RED_BG, 'not found >>'))
-		for item in not_ok:
-			print2(f'  {item}')
+	header = color(YELLOW, f'{"[state]":<11}[typ] {"name":<14} version')
+	separater_row = ''.join('-' for _ in range(len(header)))
+	print2(separater_row, header, separater_row)
+	for pkg, state in status.items():
+		if state == 'not found':
+			print2(f'{color(RED_BG, '[- FOUND]'):<11}'+f'  {pkg}')
+		else:
+			print2(f'{color(GREEN, '[+ FOUND]'):<11}'+f'  {pkg:<20} {state}')
+	print2(separater_row)
 
 if __name__ == '__main__':
 	main()

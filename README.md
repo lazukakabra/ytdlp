@@ -1,21 +1,22 @@
 # yt-dlp wrapper script
 ### install:
-- download:
-  - python -> https://www.python.org/downloads/
-  - deno -> https://deno.com/
-  - ffmpeg, ffprobe -> https://www.ffmpeg.org/download.html
-- place yt-dlp.py, ytdlp_req_check.py, ffmpeg, ffprobe in the same folder
-- with pip get python lib:
-  - yt-dlp -> ```pip install yt-dlp``` -> https://pypi.org/project/yt-dlp/
-  - yt-dlp-ejs -> ```pip install yt-dlp-ejs``` ->https://pypi.org/project/yt-dlp-ejs/
-  - mutagen -> ```pip install mutagen``` -> https://pypi.org/project/mutagen/
+- do: ```git clone https://codeberg.org/lazukakabra/ytdlp.git``` where you wish the files to be or ```download as zip``` and extract where you wish the files to be, then >>
+  - download:
+    - python -> https://www.python.org/downloads/
+    - deno -> https://deno.com/
+    - ffmpeg, ffprobe -> https://www.ffmpeg.org/download.html
+  - place yt-dlp.py, ytdlp_req_check.py, ffmpeg, ffprobe in the same folder
+  - with pip get python lib:
+    - yt-dlp -> ```pip install yt-dlp``` -> https://pypi.org/project/yt-dlp/
+    - yt-dlp-ejs -> ```pip install yt-dlp-ejs``` ->https://pypi.org/project/yt-dlp-ejs/
+    - mutagen -> ```pip install mutagen``` -> https://pypi.org/project/mutagen/
 
 **important to note, this script uses the python lib yt-dlp and not the standalone executable.**
 
 when the script is run for the first time it will ask for locations to save downloaded video and audio files which is stored in a file it creates in the same directory as the script.
 to change the paths, edit the file ```ytdlp_paths.txt``` or delete it and rerun script.
 
-the script works with below stated versions:
+the script works with below stated versions, I have checked no other versions:
 - [exe] python 3.14.6
 - [exe] deno 2.9.4
 - [exe] ffmpeg 2026-07-30-git-2ae2413488-full_build-www.gyan.dev

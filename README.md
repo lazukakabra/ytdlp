@@ -26,3 +26,9 @@ the script works with below stated versions:
 - [lib] yt-dlp 2026.7.4
 - [lib] yt-dlp-ejs 0.8.0
 - [lib] mutagen 1.48.1-py3
+
+### alias with ytdlp.bat
+*for win10, lookup how to on another platform*
+1. place ```ytdlp.bat``` in eg. ```C:\tools``` or another created-by-you folder or alternately, place it in the same folder as the script above.
+2. add the folder to **path environment variables**
+   - environment variables -> mark PATH and hit edit -> hit New and enter the path to the bat file, eg. ```C:\tools```.

@@ -9,9 +9,9 @@ from shutil import which
 from subprocess import run
 
 # set requirements to check here
-libs = ['yt_dlp', 'yt_dlp_ejs', 'mutagen'] 	# python libs
-exe1 = ['ffmpeg', 'ffprobe']				# fftools!!!, .exe in the same folder as script
-exe2 = ['deno']								# installed on system
+libs = ['yt_dlp', 'yt_dlp_ejs', 'mutagen']	# python libs
+exe1 = ['ffmpeg', 'ffprobe']	# fftools gives alot of version info, separated
+exe2 = ['deno']	# installed on system
 
 ok = {}
 not_ok = []
@@ -23,12 +23,9 @@ for lib in libs:
 	else:
 		ok['[LIB] '+lib] = version(lib)
 
-# getting path of this script, assumes ffmpeg and ffprobe exists in the same folder
-script_dir = os.path.dirname(os.path.realpath(__file__))
-
 # checking exe1
 for exe in exe1:
-	if bool(os.path.exists(script_dir+Rf'\{exe}.exe')):
+	if bool(which(exe)):
 		exe_version = run([exe, '-version'], capture_output=True, text=True).stdout
 		vers = ''.join(char for char in exe_version)
 		vers = vers.split(' Copyright')

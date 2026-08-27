@@ -32,15 +32,15 @@ the script works with below stated versions, I have checked no other versions:
 
 ## ytdlp.bat - calling script with specific user set command/alias
 ### for win10
-point of the file is to facilitate called, in this case ```ytdlp```, in cmd from anywhere which will execute ```yt-dlp.py```.
-to do so however the files location have to be added to environment variables and the file has to be edited to point to ```yt-dlp.py``` location.
+point of the file ```ytdlp.bat``` is to facilitate calling, in this case ```ytdlp```, in cmd from anywhere which will execute ```yt-dlp.py```.
+to do so however the file location have to be added to environment variables and the file has to be edited to point to ```yt-dlp.py``` location.
 1. place ```ytdlp.bat``` in eg. ```C:\tools``` or another created-by-you folder or alternatively, leave it in the same folder as the script above.
 2. edit file (with text editor) and replace ```path\to\yt-dlp.py``` with ```your path\yt-dlp.py```.
 3. add the folder to ```path environment variables```
    - environment variables -> mark PATH in user if only for that user or system for everybody and hit edit -> hit New and enter the path to the bat file, eg. ```C:\tools```.
 
 ### for linux
-simply add the following to your bash profile, or whatever else shell, terminal whatever you run. if you run something else you can probably figure this out on your own np:  
+the file ```ytdlp.bat``` is not needed for linux. instead, simply add the following to your bash profile, or whatever else shell, terminal whatever you run. if you run something else you can probably figure this out on your own np:  
   ```echo alias ytdlp="python3 /full/path/to/yt-dlp.py" >> ~/.bashrc```  
 which adds a new line in .bashrc with the alias. then restart your terminal or do:  
   ```source ~./bashrc```  

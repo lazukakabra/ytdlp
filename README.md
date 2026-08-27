@@ -4,7 +4,7 @@
   - python -> https://www.python.org/downloads/
   - deno -> https://deno.com/
   - ffmpeg, ffprobe -> https://www.ffmpeg.org/download.html
-- place script, ffmpeg, ffprobe in the same folder
+- place yt-dlp.py, ytdlp_req_check.py, ffmpeg, ffprobe in the same folder
 - with pip get python lib:
   - yt-dlp -> pip install yt-dlp
     - https://pypi.org/project/yt-dlp/

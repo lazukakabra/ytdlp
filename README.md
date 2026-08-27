@@ -25,8 +25,12 @@ the script works with below stated versions, I have checked no other versions:
 - [lib] yt-dlp-ejs 0.8.0
 - [lib] mutagen 1.48.1-py3
 
-### alias with ytdlp.bat
-*for win10, lookup how to on another platform*
-1. place ```ytdlp.bat``` in eg. ```C:\tools``` or another created-by-you folder or alternately, place it in the same folder as the script above.
-2. add the folder to **path environment variables**
+### ytdlp.bat
+*for win10, lookup how to on another platform, on linux it would be alias which would achieve the same result*
+
+point of the file is to facilitate called, in this case ```ytdlp```, in cmd from anywhere which will execute ```yt-dlp.py```.
+to do so however the files location have to be added to environment variables and the file has to be edited to point to ```yt-dlp.py``` location.
+1. place ```ytdlp.bat``` in eg. ```C:\tools``` or another created-by-you folder or alternatively, leave it in the same folder as the script above.
+2. edit file (with text editor) and replace ```path\to\yt-dlp.py``` with ```your path\yt-dlp.py```.
+3. add the folder to ```path environment variables```
    - environment variables -> mark PATH and hit edit -> hit New and enter the path to the bat file, eg. ```C:\tools```.

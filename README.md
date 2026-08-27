@@ -6,12 +6,9 @@
   - ffmpeg, ffprobe -> https://www.ffmpeg.org/download.html
 - place yt-dlp.py, ytdlp_req_check.py, ffmpeg, ffprobe in the same folder
 - with pip get python lib:
-  - yt-dlp -> pip install yt-dlp
-    - https://pypi.org/project/yt-dlp/
-  - yt-dlp-ejs -> pip install yt-dlp-ejs
-    - https://pypi.org/project/yt-dlp-ejs/
-  - mutagen -> pip install mutagen
-    - https://pypi.org/project/mutagen/
+  - yt-dlp -> pip install yt-dlp -> https://pypi.org/project/yt-dlp/
+  - yt-dlp-ejs -> pip install yt-dlp-ejs ->https://pypi.org/project/yt-dlp-ejs/
+  - mutagen -> pip install mutagen -> https://pypi.org/project/mutagen/
 
 **important to note, this script uses the python lib yt-dlp and not the standalone executable.**
 

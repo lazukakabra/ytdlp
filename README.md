@@ -1,4 +1,8 @@
 # yt-dlp wrapper script
+
+### works on:
+- windows 10 Version 22h2 (19045.6466)
+- ubuntu 26.04 - virtualbox, linux should in general work
 ### install:
 - do: ```git clone https://codeberg.org/lazukakabra/ytdlp.git``` where you wish the files to be or ```download as zip``` and extract where you wish the files to be, then >>
   - download,  linux can probably get from distro pkg mgr:
@@ -26,12 +30,22 @@ the script works with below stated versions, I have checked no other versions:
 - [lib] yt-dlp-ejs 0.8.0
 - [lib] mutagen 1.48.1-py3
 
-### ytdlp.bat
-*for win10, lookup how to on another platform, on linux it would be alias which would achieve the same result*
-
+## ytdlp.bat - calling script with specific user set command/alias
+### for win10
 point of the file is to facilitate called, in this case ```ytdlp```, in cmd from anywhere which will execute ```yt-dlp.py```.
 to do so however the files location have to be added to environment variables and the file has to be edited to point to ```yt-dlp.py``` location.
 1. place ```ytdlp.bat``` in eg. ```C:\tools``` or another created-by-you folder or alternatively, leave it in the same folder as the script above.
 2. edit file (with text editor) and replace ```path\to\yt-dlp.py``` with ```your path\yt-dlp.py```.
 3. add the folder to ```path environment variables```
    - environment variables -> mark PATH in user if only for that user or system for everybody and hit edit -> hit New and enter the path to the bat file, eg. ```C:\tools```.
+
+### for linux
+simply add the following to your bash profile, or whatever else shell, terminal whatever you run. if you run something else you can probably figure this out on your own np:  
+  ```echo alias ytdlp="python3 /full/path/to/yt-dlp.py" >> ~/.bashrc```  
+which adds a new line in .bashrc with the alias. then restart your terminal or do:  
+  ```source ~./bashrc```  
+which should refresh the terminal with the new settings set in the file.  
+you should now be able to call ```ytdlp``` (or whatever command you set instead) from your terminal and it will start the script.  
+
+### other OS
+not a damn clue

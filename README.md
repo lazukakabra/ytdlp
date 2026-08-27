@@ -41,7 +41,7 @@ to do so however the file location have to be added to environment variables and
 
 ### for linux
 the file ```ytdlp.bat``` is not needed for linux. instead, simply add the following to your bash profile, or whatever else shell, terminal whatever you run. if you run something else you can probably figure this out on your own np:  
-  ```echo alias ytdlp="python3 /full/path/to/yt-dlp.py" >> ~/.bashrc```  
+  ```echo "alias ytdlp='python3 /full/path/to/yt-dlp.py'" >> ~/.bashrc```  
 which adds a new line in .bashrc with the alias. then restart your terminal or do:  
   ```source ~./bashrc```  
 which should refresh the terminal with the new settings set in the file.  

@@ -19,7 +19,13 @@ import ytdlp_req_check as yrc
 
 # foreground color codes
 os.system('color') # needed for ANSI color codes to work (win10)
-GREEN, YELLOW, DARK_CYAN, RED_BG = '\033[92m', '\033[93m', '\033[36m', '\033[41m'
+GREEN = '\033[92m'
+YELLOW = '\033[38;5;226m'
+DARK_CYAN = '\033[36m'
+RED_BG = '\033[41m'
+MAGENTA = '\033[38;5;201m'
+ORANGE = '\033[38;5;209m'
+TURQUOISE = '\033[38;5;50m'
 RESET = '\033[0m'  # This resets the color back to default
 
 # color wrapping
@@ -84,7 +90,7 @@ def rename_and_move(dl_dir:str, tmp_dir:str, vid_or_aud:str):
 	# removing @ symbol from uploader_id
 	if filename[0] == '@':
 		filename = filename[1:]
-		print2('removed '+color(YELLOW, '@')+' from uploader_id in filename')	
+		print2('removed '+color(MAGENTA, '@')+' from uploader_id in filename')	
 
 	# if vid_or_aud = 'audio' then change dl_dir to save file in dl_dir\uploader_id
 	# --SEP-- is added when dl audio, see "ydl_opts_audio" in download()
@@ -115,7 +121,7 @@ def rename_and_move(dl_dir:str, tmp_dir:str, vid_or_aud:str):
 
 	# checking for duplicates in dl_dir
 	filename, n_duplicate = check_duplicate(filename, filename, dl_dir)
-	print2(f'found '+color(YELLOW, f'{n_duplicate-1}')+' duplicates in destination folder', '')
+	print2(f'found '+color(MAGENTA, f'{n_duplicate-1}')+' duplicates in destination folder', '')
 
 	# renaming file
 	os.rename(old_filename, filename)
@@ -135,8 +141,9 @@ def rename_and_move(dl_dir:str, tmp_dir:str, vid_or_aud:str):
 
 # main dl loop, needs 2 paths and either 'video' or 'audio'
 def download_loop(dl_dir:str, vid_or_aud:str):
+	c = {'video': TURQUOISE, 'audio': ORANGE}
 	while True:
-		url = input(color(YELLOW, f'    [{vid_or_aud.upper()}] >> enter url or leave empty to return to start. '))
+		url = input(color(c[vid_or_aud], f'    [{vid_or_aud.upper()}] >> enter url or leave empty to return to start. '))
 
 		# if no url return
 		if not url:

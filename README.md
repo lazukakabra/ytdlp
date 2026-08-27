@@ -11,10 +11,28 @@
     - ffmpeg, ffprobe -> https://www.ffmpeg.org/download.html
       - ensure ffmpeg and ffprobe are in the same folder
         - for windows, add their location to PATH environment variable, see section ytdlp.bat below on how to add variable
-  - with pip get python lib, linux might need to enter a venv to install with pip, ubuntu does atleast:
+  - with pip get python lib, linux might need to enter a venv to install with pip, ubuntu does atleast, see ubuntu section below on how to:
     - yt-dlp -> ```pip install yt-dlp``` -> https://pypi.org/project/yt-dlp/
     - yt-dlp-ejs -> ```pip install yt-dlp-ejs``` ->https://pypi.org/project/yt-dlp-ejs/
     - mutagen -> ```pip install mutagen``` -> https://pypi.org/project/mutagen/
+
+### ubuntu (26.04), probably any instance where venv is required and/or wanted
+- virtual env (venv) is needed to install pkgs with pip, so do:
+  1. make sure pip and venv is installed:
+     - ```sudo apt update```
+     - ```sudo apt install -y python3-pip python3-venv```
+  2. then navigate to your ```yt-dlp.py``` folder in your terminal and:
+     1. ```python3 -m venv venv```
+     2. ```source venv/bin/activate```
+     3. ```python3 -m pip install yt-dlp yt-dlp-ejs mutagen```
+  3. test if all ok with:
+     - ```python3 ytdlp_req_check.py```
+  4. lastly exit venv as you have no need to be there anymore.
+     - ```deactivate```
+  5. set up an alias command to enter and exit venv when you need to run this script, see ytdlp.bat section.
+  6. if yt-dlp or another module ever needs to be updated, then enter venv as per step 2.2, run the cmd below and lastly exit venv as per step 4:
+     - ```python3 -m pip install yt-dlp --upgrade```
+
 
 **important to note, this script uses the python lib yt-dlp and not the standalone executable.**
 
@@ -40,9 +58,19 @@ to do so however the file location have to be added to environment variables and
    - environment variables -> mark PATH in user if only for that user or system for everybody and hit edit -> hit New and enter the path to the bat file, eg. ```C:\tools```.
 
 ### for linux
-the file ```ytdlp.bat``` is not needed for linux. instead, simply add the following to your bash profile, or whatever else shell, terminal whatever you run. if you run something else you can probably figure this out on your own np:  
+the file ```ytdlp.bat``` is not needed for linux.  
+instead, simply add the following to your bash profile, or whatever else shell, terminal whatever you run. if you run something else you can probably figure this out on your own np. if you did not need/want venv when installing with pip then:  
   ```echo "alias ytdlp='python3 /full/path/to/yt-dlp.py'" >> ~/.bashrc```  
-which adds a new line in .bashrc with the alias. then restart your terminal or do:  
+else do for venv:  
+  ```echo "alias ytdlp='cd path/to/yt-dlp.py && source venv/bin/activate && python3 yt-dlp.py && deactivate && cd $OLDPWD'```  
+which adds a new line in .bashrc with the alias which when you call ytdlp will:  
+- move terminal directory to your file
+- activate an already created virtual environment named venv
+- execute the script
+- deactivate the venv when you quit the script
+- lastly it returns the terminal to the previous working directory, wherever your terminal was before
+
+then restart your terminal or do:  
   ```source ~/.bashrc```  
 which should refresh the terminal with the new settings set in the file.  
 you should now be able to call ```ytdlp``` (or whatever command you set instead) from your terminal and it will start the script.  

@@ -15,6 +15,7 @@ import os
 from shutil import move
 import tempfile
 import yt_dlp
+import ytdlp_req_check as yrc
 
 # foreground color codes
 os.system('color') # needed for ANSI color codes to work (win10)
@@ -135,11 +136,11 @@ def rename_and_move(dl_dir:str, tmp_dir:str, vid_or_aud:str):
 # main dl loop, needs 2 paths and either 'video' or 'audio'
 def download_loop(dl_dir:str, vid_or_aud:str):
 	while True:
-		url = input(color(YELLOW, f'  [{vid_or_aud.upper()}] >> enter url or leave empty to exit. '))
+		url = input(color(YELLOW, f'    [{vid_or_aud.upper()}] >> enter url or leave empty to return to start. '))
 
-		# if no url exit
+		# if no url return
 		if not url:
-			quit() 
+			return
 
 		# download_...() returns True if download successful, then rename file
 		with tempfile.TemporaryDirectory() as temp_dir:
@@ -165,6 +166,8 @@ def check_file_for_paths(filename:str)->dict:
 			if q and str(q).lower() not in ['y', 'ye', 'yes']:
 				continue
 			break
+
+		# write to file the entered locations
 		with open(filename, 'x') as f:
 			for k, v in locations.items():
 				f.write(k+' = '+v + '\n')
@@ -188,18 +191,27 @@ def check_file_for_paths(filename:str)->dict:
 	os.chdir(prv_dir)
 	return locs
 
-# set filename containing save folder paths
+# set filename containing save-folder paths
 paths_file = 'ytdlp_paths.txt'
 
 def main():
-	locations = check_file_for_paths(paths_file)
-	VIDEO_DIR_FINAL = Rf'{locations['video']}'
-	AUDIO_DIR_FINAL = Rf'{locations['audio']}'
-	query = input(color(YELLOW, '  download video or audio? [V/a] '))
-	if query and str(query).lower() not in ['v', 'vid', 'video']:
-		download_loop(AUDIO_DIR_FINAL, 'audio')
+	if not yrc.report():
+		print2(color(GREEN, 'found')+' all dependencies')
 	else:
-		download_loop(VIDEO_DIR_FINAL, 'video')
+		yrc.main()
+		input('press enter to quit')
+		quit()
+	locations = check_file_for_paths(paths_file)
+	video_folder = Rf'{locations['video']}'
+	audio_folder = Rf'{locations['audio']}'
+	while True:
+		query = input(color(YELLOW, '  [START] >> download video, audio or quit? [V/a/q] '))
+		if query.lower() in ['q', 'quit', 'exit']:
+			quit()
+		elif query and str(query).lower() not in ['v', 'vid', 'video']:
+			download_loop(audio_folder, 'audio')
+		else:
+			download_loop(video_folder, 'video')
 
 if __name__ == '__main__':
 	main()

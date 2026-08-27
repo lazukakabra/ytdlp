@@ -3,71 +3,87 @@
 exists on system'''
 
 import os
-from shutil import which
 import importlib.util
+from importlib.metadata import version
+from shutil import which
+from subprocess import run
 
-# foreground color codes
-os.system('color') # needed for ANSI color codes to work (win10)
-RED, GREEN, YELLOW, CYAN = '\033[91m', '\033[92m', '\033[93m', '\033[96m'
-RESET = '\033[0m'  # This resets the color back to default
+# set requirements to check here
+libs = ['yt_dlp', 'yt_dlp_ejs', 'mutagen'] 	# python libs
+exe1 = ['ffmpeg', 'ffprobe']				# fftools!!!, .exe in the same folder as script
+exe2 = ['deno']								# installed on system
 
-# color input and reset cmd style to default
-def color(color:str, arg:str) -> str:
-	return color+arg+RESET
+ok = {}
+not_ok = []
 
-# \t, indented print
-def print2(*arg):
-	for element in arg:
-		print(f'\t{element}')
-
-
-print2(color(CYAN, f'detected OS >> ')+os.name)
-
-# import block
-try:
-	import yt_dlp
-	print2(color(GREEN, f'{"yt-dlp":<16}ok'))
-except ImportError as e:
-	if type(e) == ModuleNotFoundError:
-		print2(color(RED, 'yt-dlp not installed, use "pip install yt_dlp"'))
+# checking python libs
+for lib in libs:
+	if importlib.util.find_spec(lib) is None:
+		not_ok.append('[LIB] '+lib)
 	else:
-		print2(color(RED, 'error importing yt-dlp: ')+e)
-	quit()
+		ok['[LIB] '+lib] = version(lib)
 
-if importlib.util.find_spec('yt_dlp_ejs') is None:
-	print2(color(RED, 'yt-dlp-ejs not installed, use "pip install yt-dlp-ejs'))
-else:
-	print2(color(GREEN, f'{"yt-dlp-ejs":<16}ok'))
-
-if importlib.util.find_spec('mutagen') is None:
-	print2(color(RED, 'mutagen not installed, use "pip install mutagen'))
-else:
-	print2(color(GREEN, f'{"mutagen":<16}ok'))
-
-# check if ffmpeg, deno etc. are installed, will look for ffmpeg tools
-# in the same folder as this script. change if nescessary etc.
+# getting path of this script, assumes ffmpeg and ffprobe exists in the same folder
 script_dir = os.path.dirname(os.path.realpath(__file__))
-#script_dir = your_path
 
-ffmpeg_exists = bool(os.path.exists(script_dir+R'\ffmpeg.exe'))
-ffprobe_exists = bool(os.path.exists(script_dir+R'\ffprobe.exe'))
-deno_exists = bool(which('deno'))
-
-requirements = {'ffmpeg':ffmpeg_exists, 'ffprobe':ffprobe_exists, 'deno':deno_exists}
-
-def exists(name:str, value:bool)->int:
-	if not value:
-		print2(color(RED, f'{name} \tnot found'))
-		return 1
+# checking exe1
+for exe in exe1:
+	if bool(os.path.exists(script_dir+Rf'\{exe}.exe')):
+		exe_version = run([exe, '-version'], capture_output=True, text=True).stdout
+		vers = ''.join(char for char in exe_version)
+		vers = vers.split(' Copyright')
+		vers = vers[0].split('version ')
+		vers = vers[1]
+		ok['[EXE] '+exe] = vers
 	else:
-		print2(color(GREEN, f'{name:<16}ok'))
-		return 0
+		not_ok.append('[EXE] '+exe)
 
-err_sum = 0
-for key, val in requirements.items():
-	err_sum += exists(key, val)
+# checking exe2 with shutil's which
+for exe in exe2:
+	if bool(which(exe)):
+		exe_version = run([exe, '-version'], capture_output=True, text=True).stdout
+		vers = ''.join(char for char in exe_version)
+		vers = vers.strip('\n')
+		vers = vers.split('deno ')
+		vers = vers[1]
+		ok['[EXE] '+exe] = vers
+	else:
+		not_ok.append(exe)
 
-if err_sum > 0:
-	print2('missing requirements, exiting...')
-	quit()
+# report func to be called from ytdlp.py, will not work if called from py console
+# returns true if any requirements are not found
+def report():
+	return bool(not_ok)
 
+def main():
+	# foreground color codes
+	os.system('color') # needed for ANSI color codes to work (win10)
+	GREEN, YELLOW, DARK_CYAN, RED_BG = '\033[92m', '\033[93m', '\033[36m', '\033[41m'
+	RESET = '\033[0m'  # This resets the color back to default
+
+	# color input and reset cmd style to default
+	def color(color:str, arg:str) -> str:
+		return color+arg+RESET
+
+	# \t, indented print
+	def print2(*arg):
+		for element in arg:
+			print(f'\t{element}')
+
+	# get OS, because why not
+	print2(color(DARK_CYAN, f'detected OS >> ')+os.name)
+
+	# printing status msgs
+	if ok:
+		print2(color(GREEN, 'found >>'),
+			color(YELLOW, f'  \033[4m[typ] {"name":<14} version\033[24m'))
+		for k, v in ok.items():
+			print2(f'  {k:<20} {v}')
+
+	if not_ok:
+		print2(color(RED_BG, 'not found >>'))
+		for item in not_ok:
+			print2(f'  {item}')
+
+if __name__ == '__main__':
+	main()

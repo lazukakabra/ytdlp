@@ -1,11 +1,12 @@
 # yt-dlp wrapper script
 ### install:
 - do: ```git clone https://codeberg.org/lazukakabra/ytdlp.git``` where you wish the files to be or ```download as zip``` and extract where you wish the files to be, then >>
-  - download:
+  - download,  linux can probably get from distro pkg mgr:
     - python -> https://www.python.org/downloads/
     - deno -> https://deno.com/
     - ffmpeg, ffprobe -> https://www.ffmpeg.org/download.html
-  - place yt-dlp.py, ytdlp_req_check.py, ffmpeg, ffprobe in the same folder
+      - ensure ffmpeg and ffprobe are in the same folder
+        - for windows, add their location to PATH environment variable, see section ytdlp.bat below on how to add variable
   - with pip get python lib:
     - yt-dlp -> ```pip install yt-dlp``` -> https://pypi.org/project/yt-dlp/
     - yt-dlp-ejs -> ```pip install yt-dlp-ejs``` ->https://pypi.org/project/yt-dlp-ejs/
@@ -33,4 +34,4 @@ to do so however the files location have to be added to environment variables an
 1. place ```ytdlp.bat``` in eg. ```C:\tools``` or another created-by-you folder or alternatively, leave it in the same folder as the script above.
 2. edit file (with text editor) and replace ```path\to\yt-dlp.py``` with ```your path\yt-dlp.py```.
 3. add the folder to ```path environment variables```
-   - environment variables -> mark PATH and hit edit -> hit New and enter the path to the bat file, eg. ```C:\tools```.
+   - environment variables -> mark PATH in user if only for that user or system for everybody and hit edit -> hit New and enter the path to the bat file, eg. ```C:\tools```.

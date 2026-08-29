@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+ #!/usr/bin/env python
 '''
 requirements and made with versions:
 [exe] python 3.14.6, deno 2.9.4
@@ -202,6 +202,7 @@ def check_file_for_paths(filename:str)->dict:
 paths_file = 'ytdlp_paths.txt'
 
 def main():
+	# checking for requirements with helper script ytdlp_req_check.py
 	if not yrc.report():
 		print2(color(GREEN, 'found')+' all dependencies')
 	else:

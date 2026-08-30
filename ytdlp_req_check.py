@@ -7,48 +7,67 @@ from importlib.util import find_spec
 from importlib.metadata import version
 from shutil import which
 from subprocess import run
+from platform import uname
 
 # set requirements to check here
 libs = ['yt_dlp', 'yt_dlp_ejs', 'mutagen']	# python libs
-exe1 = ['ffmpeg', 'ffprobe']	# fftools gives alot of version info, separated
-exe2 = ['deno']	# installed on system
+exe_fftools = ['ffmpeg', 'ffprobe']	# fftools gives alot of version info, separated
+exe = ['deno']	# installed on system
 
+# status dict will be key=name and value=[lib or exe, version]
+# if no version, eg. "name" wasnt found. then save '' (empty str)
 status = {}
+
+# used as true/false with report() when called by other scripts.
+# also used as giving a total in table print
 not_found = 0
 
-# checking python libs
-for lib in libs:
-	if find_spec(lib) is None:
-		not_found += 1
-		status['[LIB] '+lib] = 'not found'
-	else:
-		status['[LIB] '+lib] = version(lib)
+# prefix for printing, added to status dict when making entry to dict
+l, e = '[LIB]', '[EXE]'
 
-# checking exe1
-for exe in exe1:
-	if bool(which(exe)):
-		exe_version = run([exe, '-version'], capture_output=True, text=True).stdout
-		vers = ''.join(char for char in exe_version)
-		vers = vers.split(' Copyright')
-		vers = vers[0].split('version ')
-		vers = vers[1]
-		status['[EXE] '+exe] = vers
-	else:
-		not_found += 1
-		status['[EXE] '+exe] = 'not found'
+# checks for python libs
+def check_lib(status_dict, list_of_libs, typ, missing=0):
+	for lib in list_of_libs:
+		status_dict[lib] = [typ, '']
+		if find_spec(lib) is None:
+			missing += 1
+		else:
+			status_dict[lib][-1] = version(lib)
+	return status_dict, missing
 
-# checking exe2 with shutil's which
-for exe in exe2:
-	if bool(which(exe)):
-		exe_version = run([exe, '-version'], capture_output=True, text=True).stdout
-		vers = ''.join(char for char in exe_version)
-		vers = vers.strip('\n')
-		vers = vers.split('deno ')
-		vers = vers[1]
-		status['[EXE] '+exe] = vers
-	else:
-		not_found += 1
-		status['[EXE] '+exe] = 'not found'
+# for fftools, no direct way to get only version
+# so it has to be dug out of a small wall of text
+def check_fftools(status_dict, list_of_exes, typ, missing=0):
+	for exe in list_of_exes:
+		status_dict[exe] = [typ, '']
+		if bool(which(exe)):
+			exe_version = run([exe, '-version'], capture_output=True, text=True).stdout
+			vers = ''.join(char for char in exe_version)
+			vers = vers.split(' Copyright')[0].split('version ')[1]
+			status_dict[exe][-1] = vers
+		else:
+			missing += 1
+	return status_dict, missing
+
+# checks for executeables which prints with "name -version" as "<name> <version>"
+def check_exe(status_dict, list_of_exes, typ, missing=0):
+	for exe in list_of_exes:
+		status_dict[exe] = [typ, '']
+		if bool(which(exe)):
+			exe_version = run([exe, '-version'], capture_output=True, text=True).stdout
+			vers = ''.join(char for char in exe_version)
+			vers = vers.strip('\n').split('deno ')[1]
+			status[exe][-1] = vers
+		else:
+			missing += 1
+	return status_dict, missing
+
+status, n1 = check_lib(status, libs, l)
+status, n2 = check_fftools(status, exe_fftools, e)
+status, n3 = check_exe(status, exe, e)
+
+not_found += n1+n2+n3
+
 
 # report func to be called from ytdlp.py, will not work if called from py console
 # returns true if any requirements are not found
@@ -70,19 +89,23 @@ def main():
 		for element in arg:
 			print(f'\t{element}')
 
-	# get OS, because why not
-	print2(color(DARK_CYAN, f'detected OS >> ')+os.name)
-
 	# printing status msgs
-	header = color(YELLOW, f'{"[state]":<11}[typ] {"name":<14} version')
-	separater_row = ''.join('-' for _ in range(len(header)))
+	print2('', color(DARK_CYAN, 'requirements table for yt-dlp.py'))
+
+	header = color(YELLOW, f'{"[status]":<11}{"[type]":<7}{"name":14}version')
+	separater_row = '-'*len(header)
 	print2(separater_row, header, separater_row)
-	for pkg, state in status.items():
-		if state == 'not found':
-			print2(f'{color(RED_BG, '[- FOUND]'):<11}'+f'  {pkg}')
+
+	for pkg, values in status.items():
+		typ, ver = values
+		if not ver:
+			print2(color(RED_BG, f'{"[- FOUND]":<11}{typ:<7}{pkg:14}{ver}'))
+
 		else:
-			print2(f'{color(GREEN, '[+ FOUND]'):<11}'+f'  {pkg:<20} {state}')
-	print2(separater_row)
+			print2(color(GREEN, f'{"[+ FOUND]":<11}{typ:<7}{pkg:14}{ver}'))
+			
+	print2(separater_row, color(YELLOW, f'missing {not_found} checked dependencies'))
+	print2(color(DARK_CYAN, f'your system >> ')+uname()[0])
 
 if __name__ == '__main__':
 	main()

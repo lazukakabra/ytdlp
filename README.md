@@ -53,8 +53,9 @@ the script works with below stated versions, I have checked no other versions:
 point of the file ```ytdlp.bat``` is to facilitate calling, in this case ```ytdlp```, in cmd from anywhere which will execute ```yt-dlp.py```.
 to do so however the file location have to be added to environment variables and the file has to be edited to point to ```yt-dlp.py``` location.
 1. place ```ytdlp.bat``` in eg. ```C:\tools``` or another created-by-you folder or alternatively, leave it in the same folder as the script above.
-2. edit file (with text editor) and replace ```path\to\yt-dlp.py``` with ```your path\yt-dlp.py```.
-3. add the folder to ```path environment variables```
+  2. rename it to ```your_name.bat```if you wish the command you use to be something else. the command will be == to the filename
+3. edit file (with text editor) and replace ```path\to\yt-dlp.py``` with ```your path\yt-dlp.py```.
+4. add the folder to ```path environment variables```
    - environment variables -> mark PATH in user if only for that user or system for everybody and hit edit -> hit New and enter the path to the bat file, eg. ```C:\tools```.
 
 ### for linux
@@ -77,3 +78,14 @@ you should now be able to call ```ytdlp``` (or whatever command you set instead)
 
 ### other OS
 not a damn clue
+
+## using wrapper
+- run it in your cmd/term whatever of choice with ```py yt-dlp.py``` or your ```ytdlp``` command if you set it up.
+- it will ask whether a video or audio is wanted, eg you can choose audio and enter a link to video and still only receive an audio file as output
+- paste link to whatever video or audio you wish to download.
+- the wrapper will report the file(s) downloaded, the location they were saved and the size of file(s)
+- the wrapper will check for duplicates in the destination folder selected and report findings.
+  - if duplicate is found, the name of duplicate file gets appended a (n), eg if 3 identically named files already exits and a 4th is downloaded, then:
+    - ```this_video_is_fantastic (4).png```
+- once downloaded it will go ask for a link again. this continues untill you close the wrapper.
+- you can switch between video and audio without having to restart the wrapper, see the prompt displayed in cmd/term

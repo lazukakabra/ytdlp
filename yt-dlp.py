@@ -6,8 +6,6 @@ requirements and made with versions:
 [exe] ffprobe 2026-07-30-git-2ae2413488-full_build-www.gyan.dev
 [lib] yt-dlp 2026.7.4, yt-dlp-ejs 0.8.0, mutagen 1.48.1-py3
 
-assumes ffmpeg and ffprobe are in the same folder
-
 use devscripts/cli_to_api.py to translate cli arguments to ydl_opts code.
 '''
 

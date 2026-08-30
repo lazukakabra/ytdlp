@@ -1,10 +1,12 @@
- #!/usr/bin/env python
+#!/usr/bin/env python
 '''
 requirements and made with versions:
 [exe] python 3.14.6, deno 2.9.4
 [exe] ffmpeg 2026-07-30-git-2ae2413488-full_build-www.gyan.dev
 [exe] ffprobe 2026-07-30-git-2ae2413488-full_build-www.gyan.dev
 [lib] yt-dlp 2026.7.4, yt-dlp-ejs 0.8.0, mutagen 1.48.1-py3
+
+assumes ffmpeg and ffprobe are in the same folder
 
 use devscripts/cli_to_api.py to translate cli arguments to ydl_opts code.
 '''
@@ -41,6 +43,18 @@ def create_dir(path:str):
 		os.mkdir(path)
 		print2(color(DARK_CYAN, 'folder created at: ')+f'{path}')
 
+# get size and return with proper unit
+def fsize(fname:str, fopath:str)->str:
+	size = os.path.getsize(os.path.join(fopath, fname))
+	units = ['B', 'kB', 'MB', 'GB']
+	unit_index = 0
+	for _ in units[-1]:
+		if size > 1024:
+			unit_index += 1
+			size = size / 1024.0
+	size = str(size)[:5] # return 3 decimals max, ignore rounding
+	return f'{size} {units[unit_index]}'
+
 # downloader function, needs url, 'audio' or 'video', tmp folder path
 def download(youtube_url:str, output_dir:str, audio_or_video:str):
 	# video options
@@ -70,10 +84,12 @@ def download(youtube_url:str, output_dir:str, audio_or_video:str):
 	with yt_dlp.YoutubeDL(ydl_opts_list[audio_or_video]) as ydl:
 		try:
 			ydl.download([youtube_url])
-			print2(color(GREEN, 'downloaded'), os.listdir(output_dir)[0], '')
+			fname = os.listdir(output_dir)[0]
+			filesize = fsize(fname, output_dir)
+			print2(color(GREEN, 'downloaded'),'name: '+fname, 'size: '+filesize, '')
 			return True
 		except Exception as e:
-			#print2('error occured: ', e)
+			print2('error occured: ', e)
 			return False
 
 # fix filename and move to set directories 
@@ -200,7 +216,6 @@ def check_file_for_paths(filename:str)->dict:
 paths_file = 'ytdlp_paths.txt'
 
 def main():
-	# checking for requirements with helper script ytdlp_req_check.py
 	if not yrc.report():
 		print2(color(GREEN, 'found')+' all dependencies')
 	else:

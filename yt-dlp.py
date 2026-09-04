@@ -48,7 +48,7 @@ def fsize(fname:str, fopath:str)->str:
 	size = os.path.getsize(os.path.join(fopath, fname))
 	units = ['B', 'kB', 'MB', 'GB']
 	unit_index = 0
-	for _ in units[-1]:
+	for _ in units[:-1]:
 		if size > 1024:
 			unit_index += 1
 			size = size / 1024.0
@@ -56,34 +56,42 @@ def fsize(fname:str, fopath:str)->str:
 	return f'{size} {units[unit_index]}'
 
 # downloader function, needs url, 'audio' or 'video', tmp folder path
-def download(youtube_url:str, output_dir:str, audio_or_video:str):
-	# video options
-	ydl_opts_video = {
+def download(dl_url:str, output_dir:str, audio_or_video:str):
+	video, audio = True, False
+	if audio_or_video == 'audio':
+		video, audio = False, True
+
+	# base yt-dlp options
+	ydl_opts = {
 		'cookiesfrombrowser': ('firefox', None, None, None),
-		'format': 'bestvideo+bestaudio/best',
-        'outtmpl': f'{output_dir}/%(uploader_id)s - %(title)s.%(ext)s',
-        'quiet': True,
-        'merge_output_format': 'mp4',
-		}
+		'quiet': True,
+		'add_metadata': True,
+	}
+
+	# video options
+	if video:
+		ydl_opts['format'] = 'bestvideo+bestaudio/best'
+		ydl_opts['outtmpl'] = f'{output_dir}/%(uploader)s - %(title)s.%(ext)s'
+		ydl_opts['postprocessors'] = [{'key':'EmbedThumbnail'}]
 
 	# audio options
-	ydl_opts_audio = {
-		'format': 'opus/bestaudio/best',
-        'outtmpl': f'{output_dir}/%(uploader_id)s--SEP--%(uploader)s--SEP--%(title)s.%(ext)s',
-        'quiet': True,
-        'postprocessors': [
-        	{'key':'FFmpegExtractAudio', 'preferredcodec':'opus'},
-        	{'key':'FFmpegMetadata', 'add_metadata':True, 'add_metadata': True,},
-        	{'key':'EmbedThumbnail'}],
-        'writethumbnail': True,
-		}
+	if audio:
+		ydl_opts['format'] = 'opus/bestaudio/best'
+		ydl_opts['outtmpl'] = f'{output_dir}/%(uploader_id)s--SEP--%(uploader)s--SEP--%(title)s.%(ext)s'
+		ydl_opts['postprocessors'] = [
+			{'key':'FFmpegExtractAudio', 'preferredcodec':'opus'},
+			{'key':'EmbedThumbnail'}]
+		ydl_opts['writethumbnail'] = True
 
-	ydl_opts_list = {'video':ydl_opts_video, 'audio':ydl_opts_audio}
+	## site specific options added if relevant, comment out if unwanted
+	# youtube, prefer uploader_id
+	if 'youtube.com' in dl_url and video:
+		ydl_opts['outtmpl'] = f'{output_dir}/%(uploader_id)s - %(title)s.%(ext)s'
 
 	# download file
-	with yt_dlp.YoutubeDL(ydl_opts_list[audio_or_video]) as ydl:
+	with yt_dlp.YoutubeDL(ydl_opts) as ydl:
 		try:
-			ydl.download([youtube_url])
+			ydl.download([dl_url])
 			fname = os.listdir(output_dir)[0]
 			filesize = fsize(fname, output_dir)
 			print2(color(GREEN, 'downloaded'),'name: '+fname, 'size: '+filesize, '')

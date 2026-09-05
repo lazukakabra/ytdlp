@@ -43,17 +43,15 @@ def create_dir(path:str):
 		os.mkdir(path)
 		print2(color(DARK_CYAN, 'folder created at: ')+f'{path}')
 
-# get size and return with proper unit
 def fsize(fname:str, fopath:str)->str:
 	size = os.path.getsize(os.path.join(fopath, fname))
 	units = ['B', 'kB', 'MB', 'GB']
-	unit_index = 0
-	for _ in units[:-1]:
-		if size > 1024:
-			unit_index += 1
+	for unit in units:
+		if size >= 1024:
 			size = size / 1024.0
-	size = str(size)[:5] # return 3 decimals max, ignore rounding
-	return f'{size} {units[unit_index]}'
+		elif unit == units[-1] or size < 1024:
+			break
+	return f'{str(size)[:5]} {unit}' # return 3 decimals max, ignore rounding
 
 # downloader function, needs url, 'audio' or 'video', tmp folder path
 def download(dl_url:str, output_dir:str, audio_or_video:str):
@@ -61,30 +59,30 @@ def download(dl_url:str, output_dir:str, audio_or_video:str):
 	if audio_or_video == 'audio':
 		video, audio = False, True
 
-	# base yt-dlp options
+	# base yt-dlp options, for postprocessors: ORDER MATTERS!
 	ydl_opts = {
 		'cookiesfrombrowser': ('firefox', None, None, None),
 		'quiet': True,
-		'add_metadata': True,
+		'postprocessors': [
+			{'key': 'FFmpegMetadata', 'add_metadata': True},
+			{'key': 'EmbedThumbnail'}]
 	}
 
 	# video options
 	if video:
 		ydl_opts['format'] = 'bestvideo+bestaudio/best'
 		ydl_opts['outtmpl'] = f'{output_dir}/%(uploader)s - %(title)s.%(ext)s'
-		ydl_opts['postprocessors'] = [{'key':'EmbedThumbnail'}]
 
 	# audio options
 	if audio:
 		ydl_opts['format'] = 'opus/bestaudio/best'
 		ydl_opts['outtmpl'] = f'{output_dir}/%(uploader_id)s--SEP--%(uploader)s--SEP--%(title)s.%(ext)s'
-		ydl_opts['postprocessors'] = [
-			{'key':'FFmpegExtractAudio', 'preferredcodec':'opus'},
-			{'key':'EmbedThumbnail'}]
+		ydl_opts['postprocessors'].insert(0,
+			{'key': 'FFmpegExtractAudio', 'preferredcodec':'opus'})
 		ydl_opts['writethumbnail'] = True
 
 	## site specific options added if relevant, comment out if unwanted
-	# youtube, prefer uploader_id
+	# youtube, prefer uploader_id for videos
 	if 'youtube.com' in dl_url and video:
 		ydl_opts['outtmpl'] = f'{output_dir}/%(uploader_id)s - %(title)s.%(ext)s'
 
